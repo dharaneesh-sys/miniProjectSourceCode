@@ -1,9 +1,5 @@
 ## changes.md — What I changed and why (detailed)
 
-This document explains every change made to `trans.c`, in beginner-friendly terms.
-
----
-
 ## 1) What the original program was doing
 
 The program stores **100 fixed-size records** in a binary file called `credit.dat`.

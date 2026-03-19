@@ -267,21 +267,25 @@ void update_record(FILE *fptr)
     }
     else
     { // update record
-        printf("%-6d%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
+        double transaction; /* declare early for older C compilers */
+        printf("%-6u%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
         // request transaction amount from user
-        double transaction = get_double("Enter charge ( + ) or payment ( - ): ");
+        transaction = get_double("Enter charge ( + ) or payment ( - ): ");
         if (client.balance + transaction < 0.0) {
             puts("Transaction denied: balance cannot go negative.");
             return;
         }
         client.balance += transaction; // update record balance
 
-        printf("%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName, client.balance);
+        printf("%-6u%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
         // move file pointer to correct record in file
         // move back by 1 record length
-        fseek(fptr, -sizeof(struct client_data), SEEK_CUR);
+        if (fseek(fptr, -(long)sizeof(struct client_data), SEEK_CUR) != 0) {
+            puts("Seek error while updating the record.");
+            return;
+        }
         // write updated record over old record in file
         fwrite(&client, sizeof(struct client_data), 1, fptr);
         fflush(fptr);
@@ -340,7 +344,7 @@ void new_record(FILE *fptr)
     // display error if account already exists
     if (client.acctNum != 0)
     {
-        printf("Account #%d already contains information.\n", client.acctNum);
+        printf("Account #%u already contains information.\n", client.acctNum);
     } // end if
     else
     { // create record
@@ -385,7 +389,10 @@ void debit_transaction(FILE *fptr)
     }
 
     client.balance -= amount;
-    fseek(fptr, -sizeof(struct client_data), SEEK_CUR);
+    if (fseek(fptr, -(long)sizeof(struct client_data), SEEK_CUR) != 0) {
+        puts("Seek error while writing the updated debit record.");
+        return;
+    }
     fwrite(&client, sizeof(struct client_data), 1, fptr);
     fflush(fptr);
     puts("Debit successful.");
