@@ -29,6 +29,25 @@ Review the given source code before starting the project:
 
 ---
 
+## What this repo now includes
+
+- **Bug fix**: Correct file-reading loop when exporting records (avoids `feof()` misuse).
+- **Error handling**: Safer numeric input and basic file I/O checks.
+- **Added features**:
+  - List all accounts on screen
+  - Search an account and display it
+  - ATM-style debit (withdraw) with insufficient-balance protection
+  - Generate `accounts_sorted.txt` sorted by name
+
+## How to compile and run (Linux)
+
+```bash
+gcc trans.c -o trans
+./trans
+```
+
+---
+
 ## Evaluation Criteria
 
 ### 1. General (25 Points)
