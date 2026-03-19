@@ -45,7 +45,10 @@ Review the given source code before starting the project:
 gcc trans.c -o trans
 ./trans
 ```
-
+```powershell
+gcc trans.c -o trans
+.\trans.exe
+```
 ---
 
 ## Evaluation Criteria
