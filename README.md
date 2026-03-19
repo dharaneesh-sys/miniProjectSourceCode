@@ -39,7 +39,7 @@ Review the given source code before starting the project:
   - ATM-style debit (withdraw) with insufficient-balance protection
   - Generate `accounts_sorted.txt` sorted by name
 
-## How to compile and run (Linux)
+## How to compile and run 
 
 ```bash
 gcc trans.c -o trans
