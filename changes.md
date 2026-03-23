@@ -226,6 +226,9 @@ But:
 - `fseek` to the exact record.
 - Reads it with `fread`.
 - If `acctNum == 0`, prints “no information”.
+- Uses the standard library **`qsort()`** to sort by:
+   - last name, then first name
+   - (alphabetical by last name; if the last name matches, it uses first name)
 - Otherwise prints that one record in a nice table format.
 
 **Why it’s a good mini-project feature**
