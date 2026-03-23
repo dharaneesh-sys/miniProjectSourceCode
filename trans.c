@@ -55,8 +55,7 @@ int main(int argc, char *argv[])
             text_file(cfPtr);
             break;
         // update record
-        case 2:
-            update_record(cfPtr);
+        case 2:            update_record(cfPtr);
             break;
         // create record
         case 3:
@@ -407,11 +406,19 @@ int compare_names(const struct client_data *a, const struct client_data *b)
     return strcmp(a->firstName, b->firstName);
 }
 
+/* qsort comparator wrapper: sorts by last name, then first name. */
+int qsort_compare_client_data(const void *a, const void *b)
+{
+    const struct client_data *ca = (const struct client_data *)a;
+    const struct client_data *cb = (const struct client_data *)b;
+    return compare_names(ca, cb);
+}
+
 void write_sorted_text_file(FILE *read_ptr)
 {
     struct client_data records[MAX_RECORDS];
     unsigned int count = 0;
-    unsigned int i, j;
+    unsigned int i;
 
     rewind(read_ptr);
     while (count < MAX_RECORDS &&
@@ -426,15 +433,8 @@ void write_sorted_text_file(FILE *read_ptr)
         return;
     }
 
-    for (i = 0; i + 1 < count; ++i) {
-        for (j = 0; j + 1 < count - i; ++j) {
-            if (compare_names(&records[j], &records[j + 1]) > 0) {
-                struct client_data tmp = records[j];
-                records[j] = records[j + 1];
-                records[j + 1] = tmp;
-            }
-        }
-    }
+    /* Sort using qsort (stdlib) instead of bubble sort. */
+    qsort(records, count, sizeof(struct client_data), qsort_compare_client_data);
 
     {
         FILE *out = fopen("accounts_sorted.txt", "w");

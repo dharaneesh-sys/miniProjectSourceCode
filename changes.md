@@ -261,14 +261,14 @@ But:
 
 **What it does**
 1. Reads all non-empty records into an array.
-2. Uses **bubble sort** to sort by:
+2. Uses the standard library **`qsort()`** to sort by:
    - last name, then first name
 3. Writes a formatted file called:
    - `accounts_sorted.txt`
 
 **Why**
 - The guideline sheet also lists “sorting of records using algorithm of choice”.
-- Bubble sort is beginner-friendly and acceptable for only up to 100 records.
+- `qsort()` is a standard C-library solution; it fits nicely for sorting up to 100 records.
 
 ---
 
@@ -323,5 +323,38 @@ Based on the guideline page you shared, here is how the current code matches it:
   - **Limit on negative balance**: enforced in `update_record` and `debit_transaction`.
   - **ATM debit transaction**: implemented (`debit_transaction`).
   - **Sorting records**: implemented (`accounts_sorted.txt`).
+
+---
+
+## 12) Windows compatibility fixes (build issue)
+
+Some Windows compilers are stricter about C rules.
+
+- In `update_record()`, I moved the `double transaction` declaration to the start of the `else` block.
+  - This avoids “mixed declarations and code” issues on stricter C compilers.
+- In `update_record()` and `new_record()`, I fixed `printf` format specifiers for `unsigned int`:
+  - use `%u` instead of `%d`.
+- In `debit_transaction()`, I fixed the random-access offset to use:
+  - `sizeof(struct client_data)`
+
+---
+
+## 13) Windows-safe reverse seeks
+
+For places that move the file pointer backwards (`fseek(..., SEEK_CUR)` with a negative offset), I added:
+
+- A signed cast to ensure the offset is negative as intended:
+  - `fseek(fptr, -(long)sizeof(struct client_data), SEEK_CUR)`
+- An error check:
+  - if `fseek` fails, the function prints an error and returns (so it doesn’t write to the wrong location).
+
+---
+
+## 14) Sorting implementation change (bubble sort -> qsort)
+
+Inside `write_sorted_text_file()`:
+
+- Replaced the manual bubble-sort loops with a call to `qsort()`.
+- Added `qsort_compare_client_data(...)` as a normal file-scope comparator (not a nested function) so it works in standard C on Windows too.
 
 

@@ -1,0 +1,5 @@
+Acct  Last Name       First Name    Balance
+1     John            Joe           1422.00
+2     john            jack          1000.00
+3     bob             charlie       1500.00
+134217728�@                             0.00
